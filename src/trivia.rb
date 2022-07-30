@@ -1,12 +1,15 @@
 require "http"
+require_relative "question"
 
 class Trivia
+  attr_reader :round_one, :round_two, :final
+
   def initialize
     round_one_cats = []
     round_two_cats = []
-    @final_questions = []
+    final_questions = []
 
-    while round_one_cats.length < 5 && round_two_cats.length < 5 && @final_questions.length < 1
+    while round_one_cats.length < 5 && round_two_cats.length < 5 && final_questions.length < 1
       response = HTTP.get("http://jservice.io/api/random?count=100").parse
 
       response.each do |question|
@@ -16,13 +19,13 @@ class Trivia
         when 600 || 700 || 800 || 900 || 1000
           round_two_cats << question["category"]["id"]
         when nil
-          @final_questions << question
+          final_questions << question
         end
       end
     end
 
-    @round_one_questions = []
-    @round_one_categories = []
+    round_one_questions = []
+    round_one_categories = []
 
     round_one_cats.sample(5).each do |category|
       questions_one = []
@@ -30,8 +33,9 @@ class Trivia
       questions_three = []
       questions_four = []
       questions_five = []
+      questions_nil = []
       response = HTTP.get("https://jservice.io/api/category?id=#{category}").parse
-      @round_one_categories << response["title"]
+      round_one_categories << response["title"]
       response["clues"].each do |question|
         case question["value"]
         when 100
@@ -44,14 +48,36 @@ class Trivia
           questions_four << question
         when 500
           questions_five << question
+        when nil
+          questions_nil << question
         end
       end
+      if questions_one.empty?
+        questions_one.push(questions_nil.delete_at(0))
+        questions_one[0].transform_values { |value| value || 100 }
+      end
+      if questions_two.empty?
+        questions_two.push(questions_nil.delete_at(0))
+        questions_two[0].transform_values { |value| value || 200 }
+      end
+      if questions_three.empty?
+        questions_three.push(questions_nil.delete_at(0))
+        questions_three[0].transform_values { |value| value || 300 }
+      end
+      if questions_four.empty?
+        questions_four.push(questions_nil.delete_at(0))
+        questions_four[0].transform_values { |value| value || 400 }
+      end
+      if questions_five.empty?
+        questions_five.push(questions_nil.delete_at(0))
+        questions_five[0].transform_values { |value| value || 500 }
+      end
 
-      @round_one_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
+      round_one_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
     end
 
-    @round_two_questions = []
-    @round_two_categories = []
+    round_two_questions = []
+    round_two_categories = []
 
     round_two_cats.sample(5).each do |category|
       questions_one = []
@@ -59,8 +85,9 @@ class Trivia
       questions_three = []
       questions_four = []
       questions_five = []
+      questions_nil = []
       response = HTTP.get("https://jservice.io/api/category?id=#{category}").parse
-      @round_two_categories << response["title"]
+      round_two_categories << response["title"]
       response["clues"].each do |question|
         case question["value"]
         when 200
@@ -73,10 +100,74 @@ class Trivia
           questions_four << question
         when 1000
           questions_five << question
+        when nil
+          questions_nil << question
         end
       end
 
-      @round_two_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
+      if questions_one.empty?
+        questions_one.push(questions_nil.delete_at(0))
+        questions_one[0].transform_values { |value| value || 200 }
+      end
+      if questions_two.empty?
+        questions_two.push(questions_nil.delete_at(0))
+        questions_two[0].transform_values { |value| value || 400 }
+      end
+      if questions_three.empty?
+        questions_three.push(questions_nil.delete_at(0))
+        questions_three[0].transform_values { |value| value || 600 }
+      end
+      if questions_four.empty?
+        questions_four.push(questions_nil.delete_at(0))
+        questions_four[0].transform_values { |value| value || 800 }
+      end
+      if questions_five.empty?
+        questions_five.push(questions_nil.delete_at(0))
+        questions_five[0].transform_values { |value| value || 1000 }
+      end
+
+      round_two_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
+    end
+
+    @round_one = []
+    @round_two = []
+
+    column_number = 0
+    for i in 0..4
+      row_number = 0
+      for j in 0..4
+        @round_one << Question.new(round_one_questions[i][j]["question"], round_one_questions[i][j]["answer"], round_one_questions[i][j]["value"], round_one_categories[i], row_number, column_number)
+        @round_two << Question.new(round_two_questions[i][j]["question"], round_two_questions[i][j]["answer"], round_two_questions[i][j]["value"], round_two_categories[i], row_number, column_number)
+        row_number += 1
+      end
+      column_number += 1
+    end
+
+    final = final_questions.sample
+    @final = Question.new(final["question"], final["answer"], "Final Jeopardy", final["category"]["title"], 0, 0)
+  end
+
+  def find_question(round, row_number, column_number)
+    if round == "one"
+      @round_one.each do |question|
+        if question.row_number == row_number && question.column_number == column_number
+          return question
+        end
+      end
+    end
+    if round == "two"
+      @round_two.each do |question|
+        if question.row_number == row_number && question.column_number == column_number
+          return question
+        end
+      end
+    end
+    if round == "final"
+      return @final
     end
   end
 end
+
+trivia = Trivia.new
+
+pp trivia.find_question("two", 3, 1)
