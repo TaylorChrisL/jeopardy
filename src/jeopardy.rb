@@ -21,4 +21,14 @@ class Jeopardy < Gosu::Window
     @board = GameBoard.new
     @board.set_daily_double
   end
+
+  def initialize_final
+    @scene = :final
+  end
+
+  def draw
+  end
+
+  def update
+  end
 end

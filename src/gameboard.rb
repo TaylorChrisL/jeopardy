@@ -1,4 +1,6 @@
 class GameBoard
+  attr_reader :grid, :game_background_image
+
   def initialize
     @grid = [
       [1, 1, 1, 1, 1],
@@ -7,6 +9,7 @@ class GameBoard
       [1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1],
     ]
+    @game_background_image = Gosu::Image.new("media/jeopardy_board.png", :tileable => true)
   end
 
   def set_daily_double
