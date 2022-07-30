@@ -167,7 +167,3 @@ class Trivia
     end
   end
 end
-
-trivia = Trivia.new
-
-pp trivia.find_question("two", 3, 1)
