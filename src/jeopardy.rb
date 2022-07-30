@@ -9,12 +9,6 @@ class Jeopardy < Gosu::Window
 
   def initialize_game
     @scene = :game
-    @grid = [
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0],
-    ]
+    @board = GameBoard.new
   end
 end
