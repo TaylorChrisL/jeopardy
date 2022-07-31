@@ -6,7 +6,7 @@ class Jeopardy < Gosu::Window
   attr_reader :scene
 
   def initialize
-    super 800, 600
+    super 1000, 600
     self.caption = "Jeopardy"
     @scene = :start
     @trivia = Trivia.new
@@ -83,7 +83,13 @@ class Jeopardy < Gosu::Window
         x = 1
         row.each do
           if mouse_x < (146 + (126 * (x - 1))) && mouse_x > (30 + (126 * (x - 1))) && mouse_y < (210 + (90 * (y - 1))) && mouse_y > (128 + (90 * (y - 1)))
-            p @trivia.find_question(scene, x - 1, y - 1)
+            if @board.grid[y - 1][x - 1] == 1
+              p @trivia.find_question(scene, x - 1, y - 1)
+              @board.grid[y - 1][x - 1] = 0
+            elsif @board.grid[x - 1][y - 1] == 2
+              p "Daily Double"
+              @board.grid[y - 1][x - 1] = 0
+            end
           end
           x += 1
         end
