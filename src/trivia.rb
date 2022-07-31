@@ -136,8 +136,8 @@ class Trivia
     for i in 0..5
       row_number = 0
       for j in 0..4
-        @round_one << Question.new(round_one_questions[j][i]["question"], round_one_questions[j][i]["answer"], round_one_questions[j][i]["value"], round_one_categories[i], row_number, column_number)
-        @round_two << Question.new(round_two_questions[j][i]["question"], round_two_questions[j][i]["answer"], round_two_questions[j][i]["value"], round_two_categories[i], row_number, column_number)
+        @round_one << Question.new(round_one_questions[i][j]["question"], round_one_questions[i][j]["answer"], round_one_questions[i][j]["value"], round_one_categories[i], column_number, row_number)
+        @round_two << Question.new(round_two_questions[i][j]["question"], round_two_questions[i][j]["answer"], round_two_questions[i][j]["value"], round_two_categories[i], column_number, row_number)
         row_number += 1
       end
       column_number += 1
