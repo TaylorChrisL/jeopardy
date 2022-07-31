@@ -11,6 +11,7 @@ class Jeopardy < Gosu::Window
     @scene = :start
     @trivia = Trivia.new
     @start_game_image = Gosu::Image.new("media/jeopardy_start.png", :tileable => true)
+    @font_values = Gosu::Font.new(20)
   end
 
   def initialize_round_one
@@ -50,6 +51,17 @@ class Jeopardy < Gosu::Window
 
   def draw_rounds
     @board.game_background_image.draw(0, 0, 0)
+    y = 0
+    @board.grid.each do |row|
+      x = 0
+      row.each do
+        if @board.grid[y][x] != 0
+          @font_values.draw(@trivia.find_question(scene, x, y).value, (75 + (126 * x)), (140 + (90 * y)), 2)
+        end
+        x += 1
+      end
+      y += 1
+    end
   end
 
   def update
@@ -78,17 +90,17 @@ class Jeopardy < Gosu::Window
 
   def button_down_rounds(id)
     if id == Gosu::MsLeft
-      y = 1
+      y = 0
       @board.grid.each do |row|
-        x = 1
+        x = 0
         row.each do
-          if mouse_x < (146 + (126 * (x - 1))) && mouse_x > (30 + (126 * (x - 1))) && mouse_y < (210 + (90 * (y - 1))) && mouse_y > (128 + (90 * (y - 1)))
-            if @board.grid[y - 1][x - 1] == 1
-              p @trivia.find_question(scene, x - 1, y - 1)
-              @board.grid[y - 1][x - 1] = 0
-            elsif @board.grid[x - 1][y - 1] == 2
+          if mouse_x < (146 + (126 * (x))) && mouse_x > (30 + (126 * (x))) && mouse_y < (210 + (90 * (y))) && mouse_y > (128 + (90 * (y)))
+            if @board.grid[y][x] == 1
+              p @trivia.find_question(scene, x, y)
+              @board.grid[y][x] = 0
+            elsif @board.grid[x][y] == 2
               p "Daily Double"
-              @board.grid[y - 1][x - 1] = 0
+              @board.grid[y][x] = 0
             end
           end
           x += 1
