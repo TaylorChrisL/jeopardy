@@ -19,7 +19,7 @@ class GameBoard
       column = square % 5
       @grid[row][column] = 2
     elsif scene == :round_two
-      squares = (0..24).to_a.sort { rand() - 0.5 }[0..1]
+      squares = (0..29).to_a.sort { rand() - 0.5 }[0..1]
       row_one = squares[0] / 6
       column_one = squares[0] % 5
       @grid[row_one][column_one] = 2
