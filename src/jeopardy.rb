@@ -16,13 +16,13 @@ class Jeopardy < Gosu::Window
   def initialize_round_one
     @scene = :round_one
     @board = GameBoard.new
-    @board.set_daily_double
+    @board.set_daily_double(@scene)
   end
 
   def initialize_round_two
     @scene = :round_two
     @board = GameBoard.new
-    @board.set_daily_double
+    @board.set_daily_double(@scene)
   end
 
   def initialize_final
