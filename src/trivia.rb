@@ -9,7 +9,7 @@ class Trivia
     round_two_cats = []
     final_questions = []
 
-    while round_one_cats.length < 5 && round_two_cats.length < 5 && final_questions.length < 1
+    while round_one_cats.length < 6 && round_two_cats.length < 6 && final_questions.length < 1
       response = HTTP.get("http://jservice.io/api/random?count=100").parse
 
       response.each do |question|
@@ -27,7 +27,7 @@ class Trivia
     round_one_questions = []
     round_one_categories = []
 
-    round_one_cats.sample(5).each do |category|
+    round_one_cats.sample(6).each do |category|
       questions_one = []
       questions_two = []
       questions_three = []
@@ -79,7 +79,7 @@ class Trivia
     round_two_questions = []
     round_two_categories = []
 
-    round_two_cats.sample(5).each do |category|
+    round_two_cats.sample(6).each do |category|
       questions_one = []
       questions_two = []
       questions_three = []
@@ -133,7 +133,7 @@ class Trivia
     @round_two = []
 
     column_number = 0
-    for i in 0..4
+    for i in 0..5
       row_number = 0
       for j in 0..4
         @round_one << Question.new(round_one_questions[i][j]["question"], round_one_questions[i][j]["answer"], round_one_questions[i][j]["value"], round_one_categories[i], row_number, column_number)
@@ -147,22 +147,22 @@ class Trivia
     @final = Question.new(final["question"], final["answer"], "Final Jeopardy", final["category"]["title"], 0, 0)
   end
 
-  def find_question(round, row_number, column_number)
-    if round == "one"
+  def find_question(scene, row_number, column_number)
+    if scene == :round_one
       @round_one.each do |question|
         if question.row_number == row_number && question.column_number == column_number
           return question
         end
       end
     end
-    if round == "two"
+    if scene == :round_two
       @round_two.each do |question|
         if question.row_number == row_number && question.column_number == column_number
           return question
         end
       end
     end
-    if round == "final"
+    if scene == :final
       return @final
     end
   end

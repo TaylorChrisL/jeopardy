@@ -75,4 +75,20 @@ class Jeopardy < Gosu::Window
       initialize_round_one
     end
   end
+
+  def button_down_rounds(id)
+    if id == Gosu::MsLeft
+      y = 1
+      @board.grid.each do |row|
+        x = 1
+        row.each do
+          if mouse_x < (146 + (126 * (x - 1))) && mouse_x > (30 + (126 * (x - 1))) && mouse_y < (210 + (90 * (y - 1))) && mouse_y > (128 + (90 * (y - 1)))
+            p @trivia.find_question(scene, x - 1, y - 1)
+          end
+          x += 1
+        end
+        y += 1
+      end
+    end
+  end
 end
