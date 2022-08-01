@@ -11,7 +11,7 @@ class Jeopardy < Gosu::Window
     @scene = :start
     @trivia = Trivia.new
     @start_game_image = Gosu::Image.new("media/jeopardy_start.png", :tileable => true)
-    @font_values = Gosu::Font.new(20)
+    @font_values = Gosu::Font.new(40)
   end
 
   def initialize_round_one
@@ -56,7 +56,7 @@ class Jeopardy < Gosu::Window
       x = 0
       row.each do
         if @board.grid[y][x] != 0
-          @font_values.draw(@trivia.find_question(scene, x, y).value, (75 + (126 * x)), (140 + (90 * y)), 2)
+          @font_values.draw(@trivia.find_question(scene, x, y).value, (60 + (126 * x)), (150 + (90 * y)), 2, scale_x = 1, scale_y = 1, color = Gosu::Color::YELLOW)
         end
         x += 1
       end

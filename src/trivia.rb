@@ -9,20 +9,25 @@ class Trivia
     round_two_cats = []
     final_questions = []
 
-    while round_one_cats.length < 6 && round_two_cats.length < 6 && final_questions.length < 1
+    while round_one_cats.length < 6 || round_two_cats.length < 6 || final_questions.length < 1
       response = HTTP.get("http://jservice.io/api/random?count=100").parse
 
       response.each do |question|
-        case question["value"]
-        when 100 || 300 || 500
-          round_one_cats << question["category"]["id"]
-        when 600 || 700 || 800 || 900 || 1000
-          round_two_cats << question["category"]["id"]
-        when nil
-          final_questions << question
+        if question["category"]["clues_count"] >= 5
+          case question["value"]
+          when 100 || 300 || 500
+            round_one_cats << question["category"]["id"]
+          when 600 || 700 || 800 || 900 || 1000
+            round_two_cats << question["category"]["id"]
+          when nil
+            final_questions << question
+          end
         end
       end
     end
+
+    pp round_one_cats
+    pp round_two_cats
 
     round_one_questions = []
     round_one_categories = []
@@ -48,29 +53,30 @@ class Trivia
           questions_four << question
         when 500
           questions_five << question
-        when nil
+        else
+          question["value"] = nil
           questions_nil << question
         end
       end
       if questions_one.empty?
         questions_one.push(questions_nil.delete_at(0))
-        questions_one[0].transform_values { |value| value || 100 }
+        questions_one[0].transform_values { |value| value.nil? ? 100 : value }
       end
       if questions_two.empty?
         questions_two.push(questions_nil.delete_at(0))
-        questions_two[0].transform_values { |value| value || 200 }
+        questions_two[0].transform_values { |value| value.nil? ? 200 : value }
       end
       if questions_three.empty?
         questions_three.push(questions_nil.delete_at(0))
-        questions_three[0].transform_values { |value| value || 300 }
+        questions_three[0].transform_values { |value| value.nil? ? 300 : value }
       end
       if questions_four.empty?
         questions_four.push(questions_nil.delete_at(0))
-        questions_four[0].transform_values { |value| value || 400 }
+        questions_four[0].transform_values { |value| value.nil? ? 400 : value }
       end
       if questions_five.empty?
         questions_five.push(questions_nil.delete_at(0))
-        questions_five[0].transform_values { |value| value || 500 }
+        questions_five[0].transform_values { |value| value.nil? ? 500 : value }
       end
 
       round_one_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
@@ -100,30 +106,31 @@ class Trivia
           questions_four << question
         when 1000
           questions_five << question
-        when nil
+        else
+          question["value"] = nil
           questions_nil << question
         end
       end
 
       if questions_one.empty?
         questions_one.push(questions_nil.delete_at(0))
-        questions_one[0].transform_values { |value| value || 200 }
+        questions_one[0].transform_values { |value| value.nil? ? 200 : value }
       end
       if questions_two.empty?
         questions_two.push(questions_nil.delete_at(0))
-        questions_two[0].transform_values { |value| value || 400 }
+        questions_two[0].transform_values { |value| value.nil? ? 400 : value }
       end
       if questions_three.empty?
         questions_three.push(questions_nil.delete_at(0))
-        questions_three[0].transform_values { |value| value || 600 }
+        questions_three[0].transform_values { |value| value.nil? ? 600 : value }
       end
       if questions_four.empty?
         questions_four.push(questions_nil.delete_at(0))
-        questions_four[0].transform_values { |value| value || 800 }
+        questions_four[0].transform_values { |value| value.nil? ? 800 : value }
       end
       if questions_five.empty?
         questions_five.push(questions_nil.delete_at(0))
-        questions_five[0].transform_values { |value| value || 1000 }
+        questions_five[0].transform_values { |value| value.nil? ? 1000 : value }
       end
 
       round_two_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
@@ -131,6 +138,8 @@ class Trivia
 
     @round_one = []
     @round_two = []
+    pp round_one_questions
+    pp round_two_questions
 
     column_number = 0
     for i in 0..5
