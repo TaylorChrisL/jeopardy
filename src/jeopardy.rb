@@ -98,7 +98,7 @@ class Jeopardy < Gosu::Window
             if @board.grid[y][x] == 1
               p @trivia.find_question(scene, x, y)
               @board.grid[y][x] = 0
-            elsif @board.grid[x][y] == 2
+            elsif @board.grid[y][x] == 2
               p "Daily Double"
               @board.grid[y][x] = 0
             end
