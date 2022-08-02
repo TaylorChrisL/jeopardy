@@ -54,7 +54,7 @@ class Jeopardy < Gosu::Window
     @board.game_background_image.draw(0, 0, 0)
     y = 0
     6.times do
-      @font_categories.draw(@trivia.find_question(scene, y, 0).category, (28 + (126 * y)), 45, 2, scale_x = 1, scale_y = 1, color = Gosu::Color::YELLOW)
+      Gosu::Image.from_text(@trivia.find_question(scene, y, 0).category, 24, options = { :width => 118, :align => :center }).draw((28 + (126 * y)), 25, 2)
       y += 1
     end
     y = 0
