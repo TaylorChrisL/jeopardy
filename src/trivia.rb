@@ -26,9 +26,6 @@ class Trivia
       end
     end
 
-    pp round_one_cats
-    pp round_two_cats
-
     round_one_questions = []
     round_one_categories = []
 
@@ -60,23 +57,33 @@ class Trivia
       end
       if questions_one.empty?
         questions_one.push(questions_nil.delete_at(0))
-        questions_one[0].transform_values { |value| value.nil? ? 100 : value }
+        pp questions_one[0]
+        questions_one[0]["value"] = 100
+        pp questions_one[0]
       end
       if questions_two.empty?
         questions_two.push(questions_nil.delete_at(0))
-        questions_two[0].transform_values { |value| value.nil? ? 200 : value }
+        pp questions_two[0]
+        questions_two[0]["value"] = 200
+        pp questions_two[0]
       end
       if questions_three.empty?
         questions_three.push(questions_nil.delete_at(0))
-        questions_three[0].transform_values { |value| value.nil? ? 300 : value }
+        pp questions_three[0]
+        questions_three[0]["value"] = 300
+        pp questions_three[0]
       end
       if questions_four.empty?
         questions_four.push(questions_nil.delete_at(0))
-        questions_four[0].transform_values { |value| value.nil? ? 400 : value }
+        pp questions_four[0]
+        questions_four[0]["value"] = 400
+        pp questions_four[0]
       end
       if questions_five.empty?
         questions_five.push(questions_nil.delete_at(0))
-        questions_five[0].transform_values { |value| value.nil? ? 500 : value }
+        pp questions_five[0]
+        questions_five[0]["value"] = 500
+        pp questions_five[0]
       end
 
       round_one_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
@@ -114,23 +121,33 @@ class Trivia
 
       if questions_one.empty?
         questions_one.push(questions_nil.delete_at(0))
-        questions_one[0].transform_values { |value| value.nil? ? 200 : value }
+        pp questions_one[0]
+        questions_one[0]["value"] = 200
+        pp questions_one[0]
       end
       if questions_two.empty?
         questions_two.push(questions_nil.delete_at(0))
-        questions_two[0].transform_values { |value| value.nil? ? 400 : value }
+        pp questions_two[0]
+        questions_two[0]["value"] = 400
+        pp questions_two[0]
       end
       if questions_three.empty?
         questions_three.push(questions_nil.delete_at(0))
-        questions_three[0].transform_values { |value| value.nil? ? 600 : value }
+        pp questions_three[0]
+        questions_three[0]["value"] = 600
+        pp questions_three[0]
       end
       if questions_four.empty?
         questions_four.push(questions_nil.delete_at(0))
-        questions_four[0].transform_values { |value| value.nil? ? 800 : value }
+        pp questions_four[0]
+        questions_four[0]["value"] = 800
+        pp questions_four[0]
       end
       if questions_five.empty?
         questions_five.push(questions_nil.delete_at(0))
-        questions_five[0].transform_values { |value| value.nil? ? 1000 : value }
+        pp questions_five[0]
+        questions_five[0]["value"] = 1000
+        pp questions_five[0]
       end
 
       round_two_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
@@ -138,8 +155,6 @@ class Trivia
 
     @round_one = []
     @round_two = []
-    pp round_one_questions
-    pp round_two_questions
 
     column_number = 0
     for i in 0..5
