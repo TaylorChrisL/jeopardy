@@ -57,33 +57,24 @@ class Trivia
       end
       if questions_one.empty?
         questions_one.push(questions_nil.delete_at(0))
-        pp questions_one[0]
         questions_one[0]["value"] = 100
-        pp questions_one[0]
       end
       if questions_two.empty?
         questions_two.push(questions_nil.delete_at(0))
-        pp questions_two[0]
         questions_two[0]["value"] = 200
-        pp questions_two[0]
       end
       if questions_three.empty?
         questions_three.push(questions_nil.delete_at(0))
-        pp questions_three[0]
+
         questions_three[0]["value"] = 300
-        pp questions_three[0]
       end
       if questions_four.empty?
         questions_four.push(questions_nil.delete_at(0))
-        pp questions_four[0]
         questions_four[0]["value"] = 400
-        pp questions_four[0]
       end
       if questions_five.empty?
         questions_five.push(questions_nil.delete_at(0))
-        pp questions_five[0]
         questions_five[0]["value"] = 500
-        pp questions_five[0]
       end
 
       round_one_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
@@ -121,33 +112,24 @@ class Trivia
 
       if questions_one.empty?
         questions_one.push(questions_nil.delete_at(0))
-        pp questions_one[0]
         questions_one[0]["value"] = 200
-        pp questions_one[0]
       end
       if questions_two.empty?
         questions_two.push(questions_nil.delete_at(0))
-        pp questions_two[0]
         questions_two[0]["value"] = 400
-        pp questions_two[0]
       end
       if questions_three.empty?
         questions_three.push(questions_nil.delete_at(0))
-        pp questions_three[0]
+
         questions_three[0]["value"] = 600
-        pp questions_three[0]
       end
       if questions_four.empty?
         questions_four.push(questions_nil.delete_at(0))
-        pp questions_four[0]
         questions_four[0]["value"] = 800
-        pp questions_four[0]
       end
       if questions_five.empty?
         questions_five.push(questions_nil.delete_at(0))
-        pp questions_five[0]
         questions_five[0]["value"] = 1000
-        pp questions_five[0]
       end
 
       round_two_questions << [questions_one.sample, questions_two.sample, questions_three.sample, questions_four.sample, questions_five.sample]
