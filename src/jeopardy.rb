@@ -12,6 +12,7 @@ class Jeopardy < Gosu::Window
     @trivia = Trivia.new
     @start_game_image = Gosu::Image.new("media/jeopardy_start.png", :tileable => true)
     @font_values = Gosu::Font.new(40)
+    @font_categories = Gosu::Font.new(18)
   end
 
   def initialize_round_one
@@ -52,6 +53,11 @@ class Jeopardy < Gosu::Window
   def draw_rounds
     @board.game_background_image.draw(0, 0, 0)
     y = 0
+    6.times do
+      @font_categories.draw(@trivia.find_question(scene, y, 0).category, (28 + (126 * y)), 45, 2, scale_x = 1, scale_y = 1, color = Gosu::Color::YELLOW)
+      y += 1
+    end
+    y = 0
     @board.grid.each do |row|
       x = 0
       row.each do
@@ -65,6 +71,18 @@ class Jeopardy < Gosu::Window
   end
 
   def update
+    case @scene
+    when :round_one
+      update_round
+    when :round_two
+      update_round
+    end
+  end
+
+  def update_round
+    if @board.check_board_clear && scene == :round_one
+      initialize_round_two
+    end
   end
 
   def button_down(id)

@@ -28,4 +28,15 @@ class GameBoard
       @grid[row_two][column_two] = 2
     end
   end
+
+  def check_board_clear
+    grid.each do |row|
+      row.each do |square|
+        if square != 0
+          return false
+        end
+      end
+    end
+    return true
+  end
 end
