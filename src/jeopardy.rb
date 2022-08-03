@@ -11,6 +11,7 @@ class Jeopardy < Gosu::Window
     @scene = :start
     @trivia = Trivia.new
     @start_game_image = Gosu::Image.new("media/jeopardy_start.png", :tileable => true)
+    @question_background = Gosu::Image.new("media/solid_blue.jpeg", :tileable => true)
     @font_values = Gosu::Font.new(40)
     @font_categories = Gosu::Font.new(18)
   end
@@ -35,6 +36,8 @@ class Jeopardy < Gosu::Window
     case @scene
     when :start
       draw_start
+    when :question
+      draw_question
     when :round_one
       draw_rounds
     when :round_two
@@ -48,6 +51,15 @@ class Jeopardy < Gosu::Window
 
   def draw_start
     @start_game_image.draw(0, 0, 0)
+  end
+
+  def draw_question
+    @question_background.draw(0, 0, 0)
+    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).question, 64, options = { :width => 600, :align => :center }).draw(100, 75, 2)
+
+    if @show_answer
+      Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).answer, 64, options = { :width => 600, :align => :center }).draw(100, 450, 2)
+    end
   end
 
   def draw_rounds
@@ -85,10 +97,15 @@ class Jeopardy < Gosu::Window
     end
   end
 
+  def update_question
+  end
+
   def button_down(id)
     case @scene
     when :start
       button_down_start(id)
+    when :question
+      button_down_question(id)
     when :round_one
       button_down_rounds(id)
     when :round_two
@@ -106,6 +123,15 @@ class Jeopardy < Gosu::Window
     end
   end
 
+  def button_down_question(id)
+    if id == Gosu::MsLeft && !@show_answer
+      @show_answer = true
+    else
+      @scene = @scene_pass
+      @show_answer = false
+    end
+  end
+
   def button_down_rounds(id)
     if id == Gosu::MsLeft
       y = 0
@@ -115,6 +141,10 @@ class Jeopardy < Gosu::Window
           if mouse_x < (146 + (126 * (x))) && mouse_x > (30 + (126 * (x))) && mouse_y < (210 + (90 * (y))) && mouse_y > (128 + (90 * (y)))
             if @board.grid[y][x] == 1
               p @trivia.find_question(scene, x, y)
+              @y_pass = y
+              @x_pass = x
+              @scene_pass = @scene
+              @scene = :question
               @board.grid[y][x] = 0
             elsif @board.grid[y][x] == 2
               p "Daily Double"
