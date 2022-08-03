@@ -55,10 +55,12 @@ class Jeopardy < Gosu::Window
 
   def draw_question
     @question_background.draw(0, 0, 0)
-    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).question, 64, options = { :width => 600, :align => :center }).draw(100, 75, 2)
+    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).category, 40, options = { :width => 500, :align => :center }).draw(100, 10, 2)
+    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).value, 40, options = { :width => 500, :align => :center }).draw(100, 50, 2)
+    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).question, 40, options = { :width => 500, :align => :center }).draw(100, 100, 2)
 
     if @show_answer
-      Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).answer, 64, options = { :width => 600, :align => :center }).draw(100, 450, 2)
+      Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).answer, 40, options = { :width => 500, :align => :center }).draw(100, 450, 2)
     end
   end
 
@@ -140,7 +142,6 @@ class Jeopardy < Gosu::Window
         row.each do
           if mouse_x < (146 + (126 * (x))) && mouse_x > (30 + (126 * (x))) && mouse_y < (210 + (90 * (y))) && mouse_y > (128 + (90 * (y)))
             if @board.grid[y][x] == 1
-              p @trivia.find_question(scene, x, y)
               @y_pass = y
               @x_pass = x
               @scene_pass = @scene
