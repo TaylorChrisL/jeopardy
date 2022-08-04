@@ -9,15 +9,15 @@ class Jeopardy < Gosu::Window
   def initialize
     super 1000, 600
     self.caption = "Jeopardy"
-    @scene = :start
     @trivia = Trivia.new
     @start_game_image = Gosu::Image.new("media/jeopardy_start.png", :tileable => true)
-    @question_background = Gosu::Image.new("media/solid_blue.jpeg", :tileable => true)
+    @question_background = Gosu::Image.new("media/solid_blue.png", :tileable => true)
     @font_values = Gosu::Font.new(40)
     @font_categories = Gosu::Font.new(18)
     @player_one = Player.new
     @player_two = Player.new
     @player_three = Player.new
+    @scene = :start
   end
 
   def initialize_question
@@ -39,6 +39,7 @@ class Jeopardy < Gosu::Window
 
   def initialize_final
     @scene = :final
+    @current_question = @trivia.final
   end
 
   def draw
@@ -86,14 +87,14 @@ class Jeopardy < Gosu::Window
 
   def draw_question
     @question_background.draw(0, 0, 0)
-    Gosu::Image.from_text(@current_question.category, 40, options = { :width => 800, :align => :center }).draw(0, 10, 2)
-    Gosu::Image.from_text(@current_question.value, 40, options = { :width => 800, :align => :center }).draw(0, 50, 2)
-    Gosu::Image.from_text(@current_question.question, 40, options = { :width => 800, :align => :center }).draw(0, 100, 2)
+    Gosu::Image.from_text(@current_question.category, 40, options = { :width => 760, :align => :center }).draw(20, 10, 2)
+    Gosu::Image.from_text(@current_question.value, 40, options = { :width => 760, :align => :center }).draw(20, 50, 2)
+    Gosu::Image.from_text(@current_question.question, 40, options = { :width => 760, :align => :center }).draw(20, 100, 2)
 
     if @show_answer
-      Gosu::Image.from_text(@current_question.answer, 40, options = { :width => 800, :align => :center }).draw(0, 450, 2)
+      Gosu::Image.from_text(@current_question.answer, 40, options = { :width => 760, :align => :center }).draw(20, 450, 2)
     else
-      Gosu::Image.from_text("Press 'spacebar' to Show Answer", 40, options = { :width => 800, :align => :center, :color => Gosu::Color::GREEN }).draw(0, 450, 2)
+      Gosu::Image.from_text("Press 'spacebar' to Show Answer", 40, options = { :width => 760, :align => :center }).draw(20, 450, 2)
     end
   end
 
@@ -117,6 +118,22 @@ class Jeopardy < Gosu::Window
     end
   end
 
+  def draw_final
+    @question_background.draw(0, 0, 0)
+    Gosu::Image.from_text(@current_question.category, 40, options = { :width => 760, :align => :center }).draw(20, 10, 2)
+
+    if @show_question
+      Gosu::Image.from_text(@current_question.question, 40, options = { :width => 760, :align => :center }).draw(20, 200, 2)
+      if @show_answer
+        Gosu::Image.from_text(@current_question.answer, 40, options = { :width => 760, :align => :center }).draw(20, 450, 2)
+      else
+        Gosu::Image.from_text("Press 'spacebar' to Show anser", 40, options = { :width => 760, :align => :center }).draw(20, 450, 2)
+      end
+    else
+      Gosu::Image.from_text("Press 'spacebar' to Show Question", 40, options = { :width => 760, :align => :center }).draw(20, 200, 2)
+    end
+  end
+
   def update
     case @scene
     when :round_one
@@ -130,9 +147,9 @@ class Jeopardy < Gosu::Window
     if @board.check_board_clear && scene == :round_one
       initialize_round_two
     end
-  end
-
-  def update_question
+    if @board.check_board_clear && scene == :round_two
+      initialize_final
+    end
   end
 
   def button_down(id)
@@ -165,7 +182,7 @@ class Jeopardy < Gosu::Window
       @scene = @scene_pass
       @show_answer = false
     end
-    if id == Gosu::MsLeft && @show_answer
+    if id == Gosu::MsLeft
       if 800 < mouse_x && mouse_x < 900 && 100 < mouse_y && mouse_y < 200
         @player_one.score += @current_question.value
       elsif 900 < mouse_x && mouse_x < 1000 && 100 < mouse_y && mouse_y < 200
@@ -209,6 +226,14 @@ class Jeopardy < Gosu::Window
         end
         y += 1
       end
+    end
+  end
+
+  def button_down_final(id)
+    if id == Gosu::KB_SPACE && !@show_question
+      @show_question = true
+    elsif id == Gosu::KB_SPACE && @show_question
+      @show_answer = true
     end
   end
 end
