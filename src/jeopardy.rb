@@ -166,10 +166,18 @@ class Jeopardy < Gosu::Window
       @show_answer = false
     end
     if id == Gosu::MsLeft && @show_answer
-      if 800 < mouse_x && mouse_x < 900 && 100 < mouse_y && mouse_y < 900
+      if 800 < mouse_x && mouse_x < 900 && 100 < mouse_y && mouse_y < 200
         @player_one.score += @current_question.value
-      elsif 900 < mouse_x && mouse_x < 1000 && 100 < mouse_y && mouse_y < 900
+      elsif 900 < mouse_x && mouse_x < 1000 && 100 < mouse_y && mouse_y < 200
         @player_one.score -= @current_question.value
+      elsif 800 < mouse_x && mouse_x < 900 && 300 < mouse_y && mouse_y < 400
+        @player_two.score += @current_question.value
+      elsif 900 < mouse_x && mouse_x < 1000 && 300 < mouse_y && mouse_y < 400
+        @player_two.score -= @current_question.value
+      elsif 800 < mouse_x && mouse_x < 900 && 500 < mouse_y && mouse_y < 600
+        @player_three.score += @current_question.value
+      elsif 900 < mouse_x && mouse_x < 1000 && 500 < mouse_y && mouse_y < 600
+        @player_three.score -= @current_question.value
       end
     end
   end
