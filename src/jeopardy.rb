@@ -20,6 +20,11 @@ class Jeopardy < Gosu::Window
     @player_three = Player.new
   end
 
+  def initialize_question
+    @current_question = @trivia.find_question(@scene_pass, @x_pass, @y_pass)
+    @scene = :question
+  end
+
   def initialize_round_one
     @scene = :round_one
     @board = GameBoard.new
@@ -81,12 +86,12 @@ class Jeopardy < Gosu::Window
 
   def draw_question
     @question_background.draw(0, 0, 0)
-    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).category, 40, options = { :width => 800, :align => :center }).draw(0, 10, 2)
-    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).value, 40, options = { :width => 800, :align => :center }).draw(0, 50, 2)
-    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).question, 40, options = { :width => 800, :align => :center }).draw(0, 100, 2)
+    Gosu::Image.from_text(@current_question.category, 40, options = { :width => 800, :align => :center }).draw(0, 10, 2)
+    Gosu::Image.from_text(@current_question.value, 40, options = { :width => 800, :align => :center }).draw(0, 50, 2)
+    Gosu::Image.from_text(@current_question.question, 40, options = { :width => 800, :align => :center }).draw(0, 100, 2)
 
     if @show_answer
-      Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).answer, 40, options = { :width => 800, :align => :center }).draw(0, 450, 2)
+      Gosu::Image.from_text(@current_question.answer, 40, options = { :width => 800, :align => :center }).draw(0, 450, 2)
     else
       Gosu::Image.from_text("Press 'spacebar' to Show Answer", 40, options = { :width => 800, :align => :center, :color => Gosu::Color::GREEN }).draw(0, 450, 2)
     end
@@ -160,6 +165,13 @@ class Jeopardy < Gosu::Window
       @scene = @scene_pass
       @show_answer = false
     end
+    if id == Gosu::MsLeft && @show_answer
+      if 800 < mouse_x && mouse_x < 900 && 100 < mouse_y && mouse_y < 900
+        @player_one.score += @current_question.value
+      elsif 900 < mouse_x && mouse_x < 1000 && 100 < mouse_y && mouse_y < 900
+        @player_one.score -= @current_question.value
+      end
+    end
   end
 
   def button_down_rounds(id)
@@ -173,16 +185,16 @@ class Jeopardy < Gosu::Window
               @y_pass = y
               @x_pass = x
               @scene_pass = @scene
-              @scene = :question
               @board.grid[y][x] = 0
+              initialize_question
             elsif @board.grid[y][x] == 2
               p "Daily Double"
               @y_pass = y
               @x_pass = x
               @scene_pass = @scene
-              @scene = :question
               @board.grid[y][x] = 0
               @board.grid[y][x] = 0
+              initialize_question
             end
           end
           x += 1
