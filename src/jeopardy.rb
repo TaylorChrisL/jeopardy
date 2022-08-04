@@ -1,6 +1,7 @@
 require "gosu"
 require_relative "trivia"
 require_relative "gameboard"
+require_relative "player"
 
 class Jeopardy < Gosu::Window
   attr_reader :scene
@@ -14,6 +15,9 @@ class Jeopardy < Gosu::Window
     @question_background = Gosu::Image.new("media/solid_blue.jpeg", :tileable => true)
     @font_values = Gosu::Font.new(40)
     @font_categories = Gosu::Font.new(18)
+    @player_one = Player.new
+    @player_two = Player.new
+    @player_three = Player.new
   end
 
   def initialize_round_one
@@ -33,6 +37,7 @@ class Jeopardy < Gosu::Window
   end
 
   def draw
+    draw_scores
     case @scene
     when :start
       draw_start
@@ -53,14 +58,37 @@ class Jeopardy < Gosu::Window
     @start_game_image.draw(0, 0, 0)
   end
 
+  def draw_scores
+    Gosu::Image.from_text(@player_one.score, 40, options = { :width => 200, :align => :center }).draw(800, 60, 2)
+    Gosu::Image.from_text(@player_two.score, 40, options = { :width => 200, :align => :center }).draw(800, 260, 2)
+    Gosu::Image.from_text(@player_three.score, 40, options = { :width => 200, :align => :center }).draw(800, 460, 2)
+    Gosu::Image.from_text("Player One", 40, options = { :width => 200, :align => :center }).draw(800, 10, 2)
+    Gosu::Image.from_text("Player Two", 40, options = { :width => 200, :align => :center }).draw(800, 210, 2)
+    Gosu::Image.from_text("Player Three", 40, options = { :width => 200, :align => :center }).draw(800, 410, 2)
+    draw_quad(800, 100, Gosu::Color::BLUE, 900, 100, Gosu::Color::BLUE, 900, 200, Gosu::Color::BLUE, 800, 200, Gosu::Color::BLUE)
+    draw_quad(900, 100, Gosu::Color::RED, 1000, 100, Gosu::Color::RED, 1000, 200, Gosu::Color::RED, 900, 200, Gosu::Color::RED)
+    draw_quad(800, 300, Gosu::Color::BLUE, 900, 300, Gosu::Color::BLUE, 900, 400, Gosu::Color::BLUE, 800, 400, Gosu::Color::BLUE)
+    draw_quad(900, 300, Gosu::Color::RED, 1000, 300, Gosu::Color::RED, 1000, 400, Gosu::Color::RED, 900, 400, Gosu::Color::RED)
+    draw_quad(800, 500, Gosu::Color::BLUE, 900, 500, Gosu::Color::BLUE, 900, 600, Gosu::Color::BLUE, 800, 600, Gosu::Color::BLUE)
+    draw_quad(900, 500, Gosu::Color::RED, 1000, 500, Gosu::Color::RED, 1000, 600, Gosu::Color::RED, 900, 600, Gosu::Color::RED)
+    Gosu::Image.from_text("O", 80, options = { :width => 100, :align => :center }).draw(800, 110, 2)
+    Gosu::Image.from_text("X", 80, options = { :width => 100, :align => :center }).draw(900, 110, 2)
+    Gosu::Image.from_text("O", 80, options = { :width => 100, :align => :center }).draw(800, 310, 2)
+    Gosu::Image.from_text("X", 80, options = { :width => 100, :align => :center }).draw(900, 310, 2)
+    Gosu::Image.from_text("O", 80, options = { :width => 100, :align => :center }).draw(800, 510, 2)
+    Gosu::Image.from_text("X", 80, options = { :width => 100, :align => :center }).draw(900, 510, 2)
+  end
+
   def draw_question
     @question_background.draw(0, 0, 0)
-    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).category, 40, options = { :width => 500, :align => :center }).draw(100, 10, 2)
-    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).value, 40, options = { :width => 500, :align => :center }).draw(100, 50, 2)
-    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).question, 40, options = { :width => 500, :align => :center }).draw(100, 100, 2)
+    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).category, 40, options = { :width => 800, :align => :center }).draw(0, 10, 2)
+    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).value, 40, options = { :width => 800, :align => :center }).draw(0, 50, 2)
+    Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).question, 40, options = { :width => 800, :align => :center }).draw(0, 100, 2)
 
     if @show_answer
-      Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).answer, 40, options = { :width => 500, :align => :center }).draw(100, 450, 2)
+      Gosu::Image.from_text(@trivia.find_question(@scene_pass, @x_pass, @y_pass).answer, 40, options = { :width => 800, :align => :center }).draw(0, 450, 2)
+    else
+      Gosu::Image.from_text("Press 'spacebar' to Show Answer", 40, options = { :width => 800, :align => :center, :color => Gosu::Color::GREEN }).draw(0, 450, 2)
     end
   end
 
@@ -126,9 +154,9 @@ class Jeopardy < Gosu::Window
   end
 
   def button_down_question(id)
-    if id == Gosu::MsLeft && !@show_answer
+    if id == Gosu::KB_SPACE && !@show_answer
       @show_answer = true
-    else
+    elsif id == Gosu::KB_SPACE && @show_answer
       @scene = @scene_pass
       @show_answer = false
     end
@@ -149,6 +177,11 @@ class Jeopardy < Gosu::Window
               @board.grid[y][x] = 0
             elsif @board.grid[y][x] == 2
               p "Daily Double"
+              @y_pass = y
+              @x_pass = x
+              @scene_pass = @scene
+              @scene = :question
+              @board.grid[y][x] = 0
               @board.grid[y][x] = 0
             end
           end
